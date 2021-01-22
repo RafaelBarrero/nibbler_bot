@@ -78,15 +78,22 @@ async def thanos(ctx):
     await ctx.send(f"{author.mention} {response}")
 
 
-@bot.command(name='d', help='Lanza un dado. Indica las caras y el número de veces.')
-async def dice_throw(ctx, *args):
+@bot.command(name='d', help='Lanza un dado. Argumentos: Caras y número de veces')
+async def roll_dice(ctx, *args):
+    count = 1
     if args:
-        dice = args[0]
+        dice = int(args[0])
         if len(args) == 2:
-            tries = args[1]
+            tries = int(args[1])
         else:
             tries = 1
-        print(dice)
+        number_list = []
+        while count <= tries:
+            number = random.randint(1, dice)
+            number_list.append(number)
+            count += 1
+        str_number = ', '.join([f"{number}" for number in number_list])
+        await ctx.send(str_number)
     else:
         await ctx.send("Indica que dado quieres tirar")
 
