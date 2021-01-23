@@ -84,7 +84,7 @@ async def roll_dice(ctx, *args):
     if args:
         dice = int(args[0])
         if len(args) == 2:
-            tries = int(args[1])
+            tries = (int(args[1]) if int(args[1]) <= 50 else 50)
         else:
             tries = 1
         number_list = []
@@ -95,7 +95,7 @@ async def roll_dice(ctx, *args):
         str_number = ', '.join([f"{number}" for number in number_list])
         await ctx.send(str_number)
     else:
-        await ctx.send("Indica que dado quieres tirar")
+        await ctx.send("Indica qué dado quieres tirar")
 
 bot.run(TOKEN)
 
