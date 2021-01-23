@@ -10,12 +10,14 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
-
-bot = commands.Bot(command_prefix='!', case_insensitive=True)
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix='!', case_insensitive=True, intents=intents)
+guild_found = None
 
 
 @bot.event
 async def on_ready():
+    global guild_found
     guild_found = discord.utils.find(lambda g: g.name == GUILD, bot.guilds)
     print(
         f'{bot.user} is connected to the following guild:\n'
@@ -41,23 +43,46 @@ async def nine_nine(ctx):
 
 @bot.command(name='c', help='Manda a una persona al canal de "Que me caigooo"')
 async def caigo(ctx):
+    rol_bol = False
     author = ctx.message.author
     mencion = ctx.message.mentions
-    if len(mencion) == 0:
-        await ctx.send("Menciona a alguien, cara de red")
-    elif len(mencion) == 1:
-        if author.voice:
+    roles = guild_found.roles
+    canal_caida = discord.utils.get(ctx.guild.channels, name='Que me caigoooo')
+    if "everyone" in ctx.message.clean_content:
+        await ctx.send("Te pensabas que podías tirar a todos pero NO")
+        return
+    if ctx.message.raw_role_mentions:
+        role_id = ctx.message.raw_role_mentions[0]
+        for rol in roles:
+            if rol.id == role_id:
+                rol_found = rol
+                rol_bol = True
+                break
+    if author.voice:
+        if len(mencion) == 0 and not rol_bol:
+            await ctx.send("Menciona a alguien, cara de red")
+        elif rol_bol:
+            encontrados = False
+            miembros = rol_found.members
+            for miembro in miembros:
+                if miembro.voice:
+                    encontrados = True
+                    await miembro.move_to(canal_caida)
+            if not encontrados:
+                await ctx.send(f"No hay nadie conectado de {rol_found.mention} :(")
+            else:
+                await ctx.send("TIRIRIRIRI. QUE ME CAIGOOOO")
+        elif len(mencion) == 1:
             persona = ctx.message.mentions[0]
-            canal_caida = discord.utils.get(ctx.guild.channels, name='Que me caigoooo')
             try:
                 await persona.move_to(canal_caida)
                 await ctx.send("TIRIRIRIRI. QUE ME CAIGOOOO")
             except discord.errors.HTTPException:
                 await ctx.send(f"{persona.mention} no está, imbesil")
         else:
-            await ctx.send("Entra al canal, COBARDE")
+            await ctx.send("Menciona sólo a una persona, tonto")
     else:
-        await ctx.send("Menciona sólo a una persona, tonto")
+        await ctx.send("Entra al canal, COBARDE")
 
 
 @bot.command(name='rafa', help='Responde si Rafa sigue vivo o no')
