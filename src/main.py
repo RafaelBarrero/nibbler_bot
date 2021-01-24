@@ -4,7 +4,6 @@ import random
 
 import discord
 from discord.ext import commands
-import keep_alive
 
 from dotenv import load_dotenv
 
@@ -24,9 +23,6 @@ async def on_ready():
         f'{bot.user} is connected to the following guild:\n'
         f'{guild_found.name}(id: {guild_found.id})'
     )
-
-# Start server
-keep_alive.keep_alive()
 
 
 @bot.command(name='99', help='Responde con una cita aleatoria de Brooklyn 99')
