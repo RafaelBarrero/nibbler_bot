@@ -1,11 +1,23 @@
 # bot.py
+import difflib
 import os
 import random
+import time
+from pathlib import Path
 
 import discord
 from discord.ext import commands
 
 from dotenv import load_dotenv
+
+from telnetlib import EC
+from selenium import webdriver
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -13,6 +25,9 @@ GUILD = os.getenv('DISCORD_GUILD')
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', case_insensitive=True, intents=intents)
 guild_found = None
+
+links = []
+intentos = 0
 
 
 @bot.event
@@ -122,5 +137,108 @@ async def roll_dice(ctx, *args):
     else:
         await ctx.send("Indica qué dado quieres tirar")
 
-bot.run(TOKEN)
 
+async def buscar_anime(ctx, genero=None):
+    global links
+    global intentos
+    author = ctx.message.author
+    if intentos <= 10:
+        if genero:
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--incognito")
+            driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),
+                                      chrome_options=chrome_options)
+            try:
+                base = "https://www3.animeflv.net/"
+                driver.delete_all_cookies()
+
+                driver.get(f"{base}/browse")
+
+                select = Select(driver.find_element_by_id('genre_select'))
+                opciones = [opciones.text for opciones in select.options]
+                close_match = difflib.get_close_matches(genero, opciones)
+
+                if close_match:
+                    d = close_match[0]
+                    select.select_by_visible_text(d)
+
+                    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+                        (By.CLASS_NAME, "btn"))).click()  # Boton filtrar
+                    try:
+                        WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+                            (By.PARTIAL_LINK_TEXT, "Permitir todas")))  # Boton cookies
+                        time.sleep(0.5)
+                     except:
+                           pass
+
+                    driver.find_element_by_partial_link_text("Permitir todas").click()
+                    while True:
+                        ul_animes = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+                            (By.CLASS_NAME, "ListAnimes"))).find_elements_by_tag_name("li")
+                        lista = [[genero, anime.find_element_by_tag_name("a").get_attribute('href')] for anime in
+                                 ul_animes]
+                        links += lista
+
+                        siguiente = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+                            (By.PARTIAL_LINK_TEXT, "»")))
+                        if '#' in siguiente.get_attribute('href'):
+                            break
+                        else:
+                            siguiente.click()
+                    driver.quit()
+
+                else:
+                    driver.quit()
+                    intentos = 0
+                    print("no esta ese genero")
+                    await ctx.send(f"No he encontrado animes con el género {genero}. "
+                                   f"Así te puedes duchar {author.mention}")
+            except:
+                driver.quit()
+                intentos += 1
+                await buscar_anime(ctx, genero)
+        else:
+            intentos = 0
+            rafa_mention = '<@205283670209200129>'
+            await ctx.send(f"Error desconocido {rafa_mention}")
+    else:
+        intentos = 0
+        rafa_mention = '<@205283670209200129>'
+        await ctx.send(f"Error desconocido {rafa_mention}")
+
+
+async def ver_link(ctx, genero):
+    author = ctx.message.author
+    devolver = []
+    lin = [anime[1] if anime[0] == genero else None for anime in links]
+    for link in lin:
+        if link:
+            devolver.append(link)
+    response = random.choice(devolver)
+    await ctx.send(f"Dúchate, Otaku culiado {author.mention}")
+    await ctx.send(response)
+
+
+@bot.command(name='otaku', help='Te da un anime aleatorio según el género indicado')
+async def comprobar_anime(ctx, genero=None):
+    if genero:
+        lin = list(set([anime[0] for anime in links]))
+        close_match = difflib.get_close_matches(genero, lin)
+        if close_match:
+            print("esta el genero")
+            await ver_link(ctx, close_match[0])
+        else:
+            print("ejecutar script")
+            await ctx.send(f"No hay links de {genero}. Buscando enlaces...")
+            await buscar_anime(ctx, genero)
+            await ver_link(ctx, genero)
+    else:
+        print("script contra toda la página")
+        await ctx.send("Pero pon un género bro")
+
+
+bot.run(TOKEN)
