@@ -4,8 +4,8 @@ import os
 import random
 import time
 import traceback
-from pathlib import Path
 from typing import Tuple
+import youtube_dl
 
 import discord
 from discord.ext import commands
@@ -149,7 +149,6 @@ async def buscar_anime(ctx, genero=None) -> Tuple[bool, bool]:
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--incognito")
         driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),
                                   chrome_options=chrome_options)
         base = "https://www3.animeflv.net/"
@@ -245,5 +244,18 @@ async def comprobar_anime(ctx, genero=None):
         print("script contra toda la página")
         await ctx.send("Pero pon un género bro")
 
+
+@bot.command(name='vox', help='FRANCO, FRANCO. ESPAÑA, ESPAÑA')
+async def vox(ctx):
+    author = ctx.message.author
+    voice_channel = author.voice.channel
+    heroku = "/app/src/song.mp3"
+    windows = "song.mp3"
+
+    await voice_channel.connect()
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    voice.play(discord.FFmpegPCMAudio(source=heroku))
+    time.sleep(23)
+    await voice.disconnect()
 
 bot.run(TOKEN)
