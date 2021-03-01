@@ -23,7 +23,7 @@ from selenium.webdriver.common.by import By
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
+GUILD = "SALA BORRACHERAS"
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', case_insensitive=True, intents=intents)
 guild_found = None
@@ -249,13 +249,27 @@ async def comprobar_anime(ctx, genero=None):
 async def vox(ctx):
     author = ctx.message.author
     voice_channel = author.voice.channel
-    heroku = "/app/src/song.mp3"
-    windows = "song.mp3"
+    heroku = "/app/src/canciones/vox/song.mp3"
+    windows = "canciones/vox/song.mp3"
 
     await voice_channel.connect()
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     voice.play(discord.FFmpegPCMAudio(source=heroku))
     time.sleep(23)
+    await voice.disconnect()
+
+
+@bot.command(name='dance', help='WOW, YOU CAN REALLY DANCE')
+async def vox(ctx):
+    author = ctx.message.author
+    voice_channel = author.voice.channel
+    heroku = "/app/src/canciones/dance/song.mp3"
+    windows = "canciones/dance/song.mp3"
+
+    await voice_channel.connect()
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    voice.play(discord.FFmpegPCMAudio(source=heroku))
+    time.sleep(17)
     await voice.disconnect()
 
 bot.run(TOKEN)
