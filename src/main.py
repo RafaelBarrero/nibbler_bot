@@ -3,8 +3,11 @@ import difflib
 import os
 import random
 import time
+
+import asyncio
 import traceback
-from typing import Tuple
+from discord.ext.commands import Context
+from typing import Tuple, Sequence
 import youtube_dl
 
 import discord
@@ -26,7 +29,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = "SALA BORRACHERAS"
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', case_insensitive=True, intents=intents)
-guild_found = None
+guild_found: discord.Guild = None
 
 links = []
 
@@ -42,7 +45,7 @@ async def on_ready():
 
 
 @bot.command(name='99', help='Responde con una cita aleatoria de Brooklyn 99')
-async def nine_nine(ctx):
+async def nine_nine(ctx: Context):
     brooklyn_99_quotes = [
         'I\'m the human form of the 💯 emoji.',
         'Bingpot!',
@@ -52,23 +55,23 @@ async def nine_nine(ctx):
         ),
         'Title of you sex tape'
     ]
-
     response = random.choice(brooklyn_99_quotes)
     await ctx.send(response)
 
 
 @bot.command(name='c', help='Manda a una persona al canal de "Que me caigooo"')
-async def caigo(ctx):
+async def caigo(ctx: Context):
+    message: discord.Message = ctx.message
     rol_bol = False
-    author = ctx.message.author
-    mencion = ctx.message.mentions
+    author: discord.Member = message.author
+    mencion = message.mentions
     roles = guild_found.roles
-    canal_caida = discord.utils.get(ctx.guild.channels, name='Que me caigoooo')
-    if "everyone" in ctx.message.clean_content:
+    canal_caida: discord.VoiceChannel = discord.utils.get(ctx.guild.channels, name='Que me caigoooo')
+    if "everyone" in message.clean_content:
         await ctx.send("Te pensabas que podías tirar a todos pero NO")
         return
-    if ctx.message.raw_role_mentions:
-        role_id = ctx.message.raw_role_mentions[0]
+    if message.raw_role_mentions:
+        role_id = message.raw_role_mentions[0]
         for rol in roles:
             if rol.id == role_id:
                 rol_found = rol
@@ -80,6 +83,7 @@ async def caigo(ctx):
         elif rol_bol:
             encontrados = False
             miembros = rol_found.members
+            miembro: discord.Member
             for miembro in miembros:
                 if miembro.voice:
                     encontrados = True
@@ -89,7 +93,7 @@ async def caigo(ctx):
             else:
                 await ctx.send("TIRIRIRIRI. QUE ME CAIGOOOO")
         elif len(mencion) == 1:
-            persona = ctx.message.mentions[0]
+            persona: discord.Member = message.mentions[0]
             try:
                 await persona.move_to(canal_caida)
                 await ctx.send("TIRIRIRIRI. QUE ME CAIGOOOO")
@@ -102,14 +106,15 @@ async def caigo(ctx):
 
 
 @bot.command(name='rafa', help='Responde si Rafa sigue vivo o no')
-async def rafa(ctx):
+async def rafa(ctx: Context):
     rafa_mention = '<@205283670209200129>'
     await ctx.send(f"{rafa_mention} sigue vivo :'c")
 
 
 @bot.command(name='thanos', help='Comprueba si Thanos te ha matado o no')
-async def thanos(ctx):
-    author = ctx.message.author
+async def thanos(ctx: Context):
+    message: discord.Message = ctx.message
+    author: discord.Member = message.author
     thanos_quote = [
         'Fuiste asesinado por Thanos, por el bien del universo :(',
         'Thanos te perdonó :D'
@@ -120,7 +125,7 @@ async def thanos(ctx):
 
 
 @bot.command(name='d', help='Lanza un dado. Argumentos: Caras y número de veces')
-async def roll_dice(ctx, *args):
+async def roll_dice(ctx: Context, *args):
     count = 1
     if args:
         dice = int(args[0])
@@ -139,10 +144,10 @@ async def roll_dice(ctx, *args):
         await ctx.send("Indica qué dado quieres tirar")
 
 
-async def buscar_anime(ctx, genero=None) -> Tuple[bool, bool]:
+async def buscar_anime(ctx: Context, genero: (str, Sequence) = None) -> Tuple[bool, bool]:
     global links
-
-    author = ctx.message.author
+    message: discord.Message = ctx.message
+    author: discord.Member = message.author
     if genero:
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
@@ -210,8 +215,9 @@ async def buscar_anime(ctx, genero=None) -> Tuple[bool, bool]:
         await ctx.send(f"Error desconocido {rafa_mention}")
 
 
-async def ver_link(ctx, genero):
-    author = ctx.message.author
+async def ver_link(ctx: Context, genero: (str, Sequence)):
+    message: discord.Message = ctx.message
+    author: discord.Member = message.author
     devolver = []
     lin = [anime[1] if anime[0] == genero else None for anime in links]
     for link in lin:
@@ -223,7 +229,7 @@ async def ver_link(ctx, genero):
 
 
 @bot.command(name='otaku', help='Te da un anime aleatorio según el género indicado')
-async def comprobar_anime(ctx, genero=None):
+async def comprobar_anime(ctx: Context, genero: (str, Sequence) = None):
     if genero:
         lin = list(set([anime[0] for anime in links]))
         close_match = difflib.get_close_matches(genero, lin)
@@ -246,9 +252,10 @@ async def comprobar_anime(ctx, genero=None):
 
 
 @bot.command(name='vox', help='FRANCO, FRANCO. ESPAÑA, ESPAÑA')
-async def vox(ctx):
-    author = ctx.message.author
-    voice_channel = author.voice.channel
+async def vox(ctx: Context):
+    message: discord.Message = ctx.message
+    author: discord.Member = message.author
+    voice_channel: discord.VoiceChannel = author.voice.channel
     heroku = "/app/src/canciones/vox/song.mp3"
     windows = "canciones/vox/song.mp3"
 
@@ -260,9 +267,10 @@ async def vox(ctx):
 
 
 @bot.command(name='dance', help='WOW, YOU CAN REALLY DANCE')
-async def vox(ctx):
-    author = ctx.message.author
-    voice_channel = author.voice.channel
+async def vox(ctx: Context):
+    message: discord.Message = ctx.message
+    author: discord.Member = message.author
+    voice_channel: discord.VoiceChannel = author.voice.channel
     heroku = "/app/src/canciones/dance/song.mp3"
     windows = "canciones/dance/song.mp3"
 
