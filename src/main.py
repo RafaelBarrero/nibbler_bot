@@ -34,6 +34,22 @@ guild_found: discord.Guild = None
 links = []
 
 
+async def play_sound(ctx: Context, path: str):
+    author: discord.Member = ctx.message.author
+    voice_channel: discord.VoiceChannel = author.voice.channel
+
+    audio_source = discord.FFmpegPCMAudio(source=path)
+
+    await voice_channel.connect()
+    voice: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    if not voice.is_playing():
+        voice.play(audio_source, after=None)
+        while voice.is_playing():
+            await asyncio.sleep(1)
+        await voice.disconnect()
+        print("terminó de reproducir el audio")
+
+
 @bot.event
 async def on_ready():
     global guild_found
@@ -253,31 +269,17 @@ async def comprobar_anime(ctx: Context, genero: (str, Sequence) = None):
 
 @bot.command(name='vox', help='FRANCO, FRANCO. ESPAÑA, ESPAÑA')
 async def vox(ctx: Context):
-    message: discord.Message = ctx.message
-    author: discord.Member = message.author
-    voice_channel: discord.VoiceChannel = author.voice.channel
     heroku = "/app/src/canciones/vox/song.mp3"
     windows = "canciones/vox/song.mp3"
 
-    await voice_channel.connect()
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    voice.play(discord.FFmpegPCMAudio(source=heroku))
-    time.sleep(23)
-    await voice.disconnect()
+    await play_sound(ctx, heroku)
 
 
 @bot.command(name='dance', help='WOW, YOU CAN REALLY DANCE')
-async def vox(ctx: Context):
-    message: discord.Message = ctx.message
-    author: discord.Member = message.author
-    voice_channel: discord.VoiceChannel = author.voice.channel
+async def dance(ctx: Context):
     heroku = "/app/src/canciones/dance/song.mp3"
     windows = "canciones/dance/song.mp3"
 
-    await voice_channel.connect()
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    voice.play(discord.FFmpegPCMAudio(source=heroku))
-    time.sleep(17)
-    await voice.disconnect()
+    await play_sound(ctx, heroku)
 
 bot.run(TOKEN)
