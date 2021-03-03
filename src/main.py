@@ -5,10 +5,10 @@ import random
 import time
 
 import asyncio
+import json
 import traceback
-from discord.ext.commands import Context
-from typing import Tuple, Sequence
-import youtube_dl
+from discord.ext.commands import Context, has_permissions, MissingPermissions
+from typing import Tuple
 
 import discord
 from discord.ext import commands
@@ -27,11 +27,28 @@ from selenium.webdriver.common.by import By
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = "SALA BORRACHERAS"
+PATH = "/app"
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='!', case_insensitive=True, intents=intents)
 guild_found: discord.Guild = None
 
 links = []
+
+
+def when_mentioned_or_function(func):
+    def inner(client, message):
+        r = func(client, message)
+        r = commands.when_mentioned(client, message) + [r]
+        return r
+    return inner
+
+
+def get_prefix(client, message: discord.Message) -> str:
+    with open(f'{PATH}/prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    return prefixes[str(message.guild.id)]
+
+
+bot = commands.Bot(command_prefix=when_mentioned_or_function(get_prefix), case_insensitive=True, intents=intents)
 
 
 async def play_sound(ctx: Context, path: str):
@@ -48,6 +65,28 @@ async def play_sound(ctx: Context, path: str):
             await asyncio.sleep(1)
         await voice.disconnect()
         print("terminó de reproducir el audio")
+
+
+@bot.event
+async def on_guild_join(guild: discord.Guild):
+    with open(f'{PATH}/prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    prefixes[str(guild.id)] = '!'
+
+    with open(f'{PATH}/prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
+
+
+@bot.event
+async def on_guild_remove(guild: discord.Guild):
+    with open(f'{PATH}/prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    prefixes.pop(str(guild.id))
+
+    with open(f'{PATH}/prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
 
 
 @bot.event
@@ -282,5 +321,27 @@ async def dance(ctx: Context):
     windows = "canciones/dance/song.mp3"
 
     await play_sound(ctx, heroku)
+
+
+@bot.command(name='prefijo', help='Cambia el prefijo')
+@has_permissions(administrator=True)
+async def prefix(ctx: Context, new_prefix: str):
+    with open(f'{PATH}/prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    prefixes[str(ctx.guild.id)] = new_prefix
+
+    with open(f'{PATH}/prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
+
+    await bot.user.edit(display_name="asds")
+    await ctx.send(f"Listo. Prefijo cambiado a {new_prefix} :D")
+
+
+@prefix.error
+async def kick_error(ctx: Context, error):
+    if isinstance(error, MissingPermissions):
+        mention = ctx.message.author.mention
+        await ctx.send(f"Lo siento {mention}, no tienes permisos para eso :(")
 
 bot.run(TOKEN)
