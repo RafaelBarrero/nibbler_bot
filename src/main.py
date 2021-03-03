@@ -157,7 +157,7 @@ async def roll_dice(ctx: Context, *args):
         str_number = ', '.join([f"{number}" for number in number_list])
         await ctx.send(str_number)
     else:
-        await ctx.send("Indica qué dado quieres tirar")
+        await roll_dice(ctx, 6)
 
 
 async def buscar_anime(ctx: Context, genero: (str, Sequence) = None) -> Tuple[bool, bool]:
