@@ -58,6 +58,7 @@ async def on_ready():
         f'{bot.user} is connected to the following guild:\n'
         f'{guild_found.name}(id: {guild_found.id})'
     )
+    await bot.change_presence(activity=discord.Game(name=f"Cagar materia oscura"))
 
 
 @bot.command(name='99', help='Responde con una cita aleatoria de Brooklyn 99')
@@ -160,7 +161,7 @@ async def roll_dice(ctx: Context, *args):
         await roll_dice(ctx, 6)
 
 
-async def buscar_anime(ctx: Context, genero: (str, Sequence) = None) -> Tuple[bool, bool]:
+async def buscar_anime(ctx: Context, genero=None) -> Tuple[bool, bool]:
     global links
     message: discord.Message = ctx.message
     author: discord.Member = message.author
@@ -231,7 +232,7 @@ async def buscar_anime(ctx: Context, genero: (str, Sequence) = None) -> Tuple[bo
         await ctx.send(f"Error desconocido {rafa_mention}")
 
 
-async def ver_link(ctx: Context, genero: (str, Sequence)):
+async def ver_link(ctx: Context, genero):
     message: discord.Message = ctx.message
     author: discord.Member = message.author
     devolver = []
@@ -245,7 +246,7 @@ async def ver_link(ctx: Context, genero: (str, Sequence)):
 
 
 @bot.command(name='otaku', help='Te da un anime aleatorio según el género indicado')
-async def comprobar_anime(ctx: Context, genero: (str, Sequence) = None):
+async def comprobar_anime(ctx: Context, genero=None):
     if genero:
         lin = list(set([anime[0] for anime in links]))
         close_match = difflib.get_close_matches(genero, lin)
