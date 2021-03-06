@@ -16,15 +16,15 @@ class PlaySound(commands.Cog):
         author: discord.Member = ctx.message.author
         voice_channel: discord.VoiceChannel = author.voice.channel
 
-        audio_source = discord.FFmpegPCMAudio(source=path)
+        audio_source = discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source=path)
 
         await voice_channel.connect()
         voice: discord.VoiceClient = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         if not voice.is_playing():
             voice.play(audio_source, after=None)
             if "vox" in str(path):
+                await ctx.send(":flag_es:")
                 while voice.is_playing():
-                    await ctx.send(":flag_es:")
                     await asyncio.sleep(1)
                 await voice.disconnect()
             else:
