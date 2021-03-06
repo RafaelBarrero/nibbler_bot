@@ -8,12 +8,11 @@ from discord.ext.commands import Context
 class PlaySound(commands.Cog):
     file_path = pathlib.Path(__file__)
     sound_path = file_path.parent.parent.joinpath("canciones")
-    print()
 
     def __init__(self, bot):
         self.bot = bot
 
-    async def play_sound(self, ctx: Context, path: str):
+    async def play_sound(self, ctx: Context, path: pathlib.Path):
         author: discord.Member = ctx.message.author
         voice_channel: discord.VoiceChannel = author.voice.channel
 
@@ -23,9 +22,15 @@ class PlaySound(commands.Cog):
         voice: discord.VoiceClient = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         if not voice.is_playing():
             voice.play(audio_source, after=None)
-            while voice.is_playing():
-                await asyncio.sleep(1)
-            await voice.disconnect()
+            if "vox" in str(path):
+                while voice.is_playing():
+                    await ctx.send(":flag_es:")
+                    await asyncio.sleep(1)
+                await voice.disconnect()
+            else:
+                while voice.is_playing():
+                    await asyncio.sleep(1)
+                await voice.disconnect()
             print("terminó de reproducir el audio")
 
     @commands.command(name='vox', help='FRANCO, FRANCO. ESPAÑA, ESPAÑA')
