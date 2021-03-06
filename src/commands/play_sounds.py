@@ -16,7 +16,7 @@ class PlaySound(commands.Cog):
         author: discord.Member = ctx.message.author
         voice_channel: discord.VoiceChannel = author.voice.channel
 
-        audio_source = discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source=path)
+        audio_source = discord.FFmpegPCMAudio(source=path)
 
         await voice_channel.connect()
         voice: discord.VoiceClient = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
