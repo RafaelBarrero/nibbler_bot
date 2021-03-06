@@ -43,6 +43,7 @@ def get_prefix(client, message: discord.Message) -> str:
 
 
 bot = commands.Bot(command_prefix=when_mentioned_or_function(get_prefix), case_insensitive=True, intents=intents)
+bot.remove_command("help")
 
 
 @bot.event
@@ -98,13 +99,19 @@ async def on_ready():
 if __name__ == '__main__':
     file_path = pathlib.Path(__file__).parent.absolute()
     command_path = file_path.joinpath(file_path, "commands")
-    files = glob.glob(f'{command_path}/*.py')
+    help_path = file_path.joinpath(file_path, "help")
+    command_files = glob.glob(f'{command_path}/*.py')
+    help_files = glob.glob(f'{help_path}/*.py')
+    files = command_files + help_files
 
     for file in files:
         if "init" not in file and "anime" not in file:
             file_name = pathlib.Path(file).name[:-3]
             try:
-                bot.load_extension(f"commands.{file_name}")
+                if "help" in str(pathlib.Path(file)):
+                    bot.load_extension(f"help.{file_name}")
+                else:
+                    bot.load_extension(f"commands.{file_name}")
             except Exception as e:
                 print(f'Failed to load extension {file_name}.', file=sys.stderr)
                 traceback.print_exc()
