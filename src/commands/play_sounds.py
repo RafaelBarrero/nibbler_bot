@@ -14,7 +14,11 @@ class PlaySound(commands.Cog):
 
     async def play_sound(self, ctx: Context, path: pathlib.Path):
         author: discord.Member = ctx.message.author
-        voice_channel: discord.VoiceChannel = author.voice.channel
+        if author.voice:
+            voice_channel: discord.VoiceChannel = author.voice.channel
+        else:
+            await ctx.send("Entra en un canal, tonto, que eres tonto")
+            return
 
         audio_source = discord.FFmpegPCMAudio(source=path)
 
