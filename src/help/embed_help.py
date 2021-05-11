@@ -10,7 +10,7 @@ class Help(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(invoke_without_command=True)
+    @commands.group(invoke_without_command=True, case_insensitive=True)
     async def help(self, ctx: Context):
         guild_borracheras = discord.utils.find(lambda g: g.name == GUILD, self.bot.guilds)
         author: discord.Member = ctx.message.author
