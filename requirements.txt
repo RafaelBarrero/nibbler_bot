@@ -28,7 +28,7 @@ idna==2.10
 imagesize==1.2.0
 iniconfig==1.1.1
 itsdangerous==1.1.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 keyring==22.3.0
 MarkupSafe==1.1.1
 multidict==5.1.0
@@ -73,7 +73,7 @@ tqdm==4.59.0
 twine==3.3.0
 typing-extensions==3.7.4.3
 uritemplate==3.0.1
-urllib3==1.26.3
+urllib3==1.26.4
 webencodings==0.5.1
 Werkzeug==1.0.1
 yarl==1.6.3
