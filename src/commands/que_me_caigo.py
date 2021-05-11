@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands import Context
+from discord.ext.commands import Context, has_permissions, MissingPermissions
 
 
 class QueMeCaigo(commands.Cog):
@@ -9,6 +9,7 @@ class QueMeCaigo(commands.Cog):
         self.bot = bot
 
     @commands.command(name='c', help='Manda a una persona al canal de "Que me caigooo"')
+    @has_permissions(administrator=True)
     async def caigo(self, ctx: Context):
         message: discord.Message = ctx.message
         rol_bol = False
@@ -52,6 +53,12 @@ class QueMeCaigo(commands.Cog):
                 await ctx.send("Menciona sólo a una persona, tonto")
         else:
             await ctx.send("Entra al canal, COBARDE")
+
+    @caigo.error
+    async def prefix_error(self, ctx: Context, error):
+        if isinstance(error, MissingPermissions):
+            mention = ctx.message.author.mention
+            await ctx.send(f"Lo siento {mention}, no tienes permisos para eso :(")
 
 
 def setup(bot):
