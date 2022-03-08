@@ -1,8 +1,15 @@
 import asyncio
+import os
+
 import discord
 import pathlib
 from discord.ext import commands
 from discord.ext.commands import Context
+from dotenv import load_dotenv
+
+load_dotenv()
+FFMPEG_PATH = os.getenv('FFMPEG_PATH')
+DEV = os.getenv('DEV')
 
 
 class PlaySound(commands.Cog):
@@ -20,7 +27,10 @@ class PlaySound(commands.Cog):
             await ctx.send("Entra en un canal, tonto, que eres tonto")
             return
 
-        audio_source = discord.FFmpegPCMAudio(source=path)
+        if DEV:
+            audio_source = discord.FFmpegPCMAudio(executable=FFMPEG_PATH, source=path)
+        else:
+            audio_source = discord.FFmpegPCMAudio(source=path)
 
         await voice_channel.connect()
         voice: discord.VoiceClient = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
