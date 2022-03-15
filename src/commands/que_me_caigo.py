@@ -13,7 +13,7 @@ class QueMeCaigo(commands.Cog):
     @commands.command(name='c', help='Manda a una persona al canal de "Que me caigooo"')
     @has_permissions(administrator=True)
     async def caigo(self, ctx: Context):
-        if ctx.guild == GUILD:
+        if ctx.guild.name == GUILD:
             message: discord.Message = ctx.message
             rol_bol = False
             author: discord.Member = message.author
