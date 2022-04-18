@@ -1,26 +1,12 @@
-FROM alpine:latest
+FROM python:3.8-alpine
 
-RUN apk add --update build-base ca-certificates python3 python3-dev ffmpeg
+WORKDIR /app
 
-RUN cd /usr/bin \
-  && ln -sf python3.8 python \
-  && ln -sf pip3.8 pip
+RUN apk add --update --upgrade build-base ca-certificates python3 python3-dev py3-pip ffmpeg gcc musl-dev jpeg-dev zlib-dev libffi-dev cairo-dev pango-dev gdk-pixbuf-dev
 
-# for numpy install
-RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
+COPY . /app
 
-RUN pip install --no-cache-dir --upgrade \
-  pip \
-  wheel>0.25.0 \
-  distribute \
-  chaperone \
-  numpy==1.12.0 \
-  pycrypto==2.6.1 \
-  pyyaml==3.11 \
-  pytest==2.9.2 \
-  sortedcontainers==1.5.3
-
-RUN pip install -r requirements.txt
+RUN pip3 install -r ./requirements.txt
 
 RUN mkdir -p /etc/chaperone.d
 RUN rm -rf /tmp/*
