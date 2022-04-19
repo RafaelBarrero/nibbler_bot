@@ -12,4 +12,6 @@ RUN mkdir -p /etc/chaperone.d
 RUN rm -rf /tmp/*
 RUN rm -rf /var/cache/*
 
+ENV PYTHONPATH="/app"
+
 CMD [ "python3", "src/main.py" ]
