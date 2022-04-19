@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 FFMPEG_PATH = os.getenv('FFMPEG_PATH')
-DEV = os.getenv('DEV')
+DEV = (os.getenv('DEBUG', 'False') == 'True')
 
 
 class PlaySound(commands.Cog):
