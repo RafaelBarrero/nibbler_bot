@@ -2,7 +2,7 @@ FROM python:3.8-alpine
 
 WORKDIR /app
 
-RUN apk add --update --upgrade build-base ca-certificates python3 python3-dev py3-pip ffmpeg gcc musl-dev jpeg-dev zlib-dev libffi-dev cairo-dev pango-dev gdk-pixbuf-dev
+RUN apk add --update --upgrade --no-cache build-base ca-certificates ffmpeg musl-dev zlib-dev libffi-dev opus-dev
 
 COPY . /app
 
