@@ -49,8 +49,11 @@ class PlaySound(commands.Cog):
 
     @commands.command(name='stop', help='Termina el audio actual')
     async def stop(self, ctx: Context):
-        voice: discord.VoiceClient = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
-        await voice.disconnect()
+        author: discord.Member = ctx.message.author
+        bot_voice: discord.VoiceClient = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+        if author.voice and author.voice.channel.id == bot_voice.channel.id and bot_voice.is_playing():
+            bot_voice.stop()
+            await bot_voice.disconnect()
 
     @commands.command(name='presi', help='ALÓ, PRESIDENTE')
     async def presi(self, ctx: Context):
