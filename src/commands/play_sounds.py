@@ -1,5 +1,7 @@
 import asyncio
+import glob
 import os
+import random
 
 import discord
 import pathlib
@@ -38,14 +40,27 @@ class PlaySound(commands.Cog):
             voice.play(audio_source, after=None)
             if "vox" in str(path):
                 await ctx.send(":flag_es:")
-                while voice.is_playing():
-                    await asyncio.sleep(1)
-                await voice.disconnect()
-            else:
-                while voice.is_playing():
-                    await asyncio.sleep(1)
-                await voice.disconnect()
+            elif "illojuan" in str(path):
+                await ctx.send(":flag_ng:")
+            while voice.is_playing():
+                await asyncio.sleep(1)
+            await voice.disconnect()
             print("terminó de reproducir el audio")
+
+    @commands.command(name='stop', help='Termina el audio actual')
+    async def stop(self, ctx: Context):
+        voice: discord.VoiceClient = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+        await voice.disconnect()
+
+    @commands.command(name='presi', help='ALÓ, PRESIDENTE')
+    async def presi(self, ctx: Context):
+        file_path = pathlib.Path(__file__).parent.parent.absolute()
+        illojuan_path = file_path.joinpath(file_path, "canciones", "illojuan")
+        illojuan_files = glob.glob(f'{illojuan_path}/*.mp3')
+        illojuan_file = os.path.basename(random.choice(illojuan_files))
+        file = self.sound_path.joinpath(f"illojuan/{illojuan_file}")
+
+        await self.play_sound(ctx, file)
 
     @commands.command(name='vox', help='FRANCO, FRANCO. ESPAÑA, ESPAÑA')
     async def vox(self, ctx: Context):
