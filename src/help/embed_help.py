@@ -86,6 +86,12 @@ class Help(commands.Cog):
                      value="Demuestra que eres un ESPAÑOL de verdad con este audio.",
                      inline=False)
 
+        em.add_field(name='** **', value="** **", inline=False)
+
+        em.add_field(name=f"{get_prefix(self.bot, ctx.message)}presi",
+                     value="Un audio aleatorio de tu presidente favorito.",
+                     inline=False)
+
         await ctx.send(embed=em)
 
     @help.command(name="99")
@@ -282,6 +288,22 @@ class Help(commands.Cog):
         em.add_field(name="Sintaxis",
                      value=f"Escribe {get_prefix(self.bot, ctx.message)}VOX. Porque las cosas ESPAÑOLAS tienen que ir "
                            f"en mayúscula.",
+                     inline=False)
+
+        await ctx.send(embed=em)
+
+    @help.command(name="presi")
+    async def presi(self, ctx: Context):
+        em = discord.Embed(title="Presi",
+                           description="Un audio aleatorio de tu presidente favorito.",
+                           color=0x51007a)
+
+        em.set_thumbnail(url=self.bot.user.avatar_url)
+
+        em.add_field(name='** **', value="** **", inline=False)
+
+        em.add_field(name="Sintaxis",
+                     value=f"Escribe {get_prefix(self.bot, ctx.message)}presi",
                      inline=False)
 
         await ctx.send(embed=em)
