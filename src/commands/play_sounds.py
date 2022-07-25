@@ -51,9 +51,15 @@ class PlaySound(commands.Cog):
     async def stop(self, ctx: Context):
         author: discord.Member = ctx.message.author
         bot_voice: discord.VoiceClient = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
-        if author.voice and author.voice.channel.id == bot_voice.channel.id and bot_voice.is_playing():
+        if author.voice and author.voice.channel.id == bot_voice.channel.id and bot_voice.is_playing() and bot_voice.is_connected():
             bot_voice.stop()
             await bot_voice.disconnect()
+
+    @commands.command(name='dog', help='El perro de la sabiduría')
+    async def dog(self, ctx: Context):
+        file = self.sound_path.joinpath("dog/song.mp3")
+
+        await self.play_sound(ctx, file)
 
     @commands.command(name='presi', help='ALÓ, PRESIDENTE')
     async def presi(self, ctx: Context):
