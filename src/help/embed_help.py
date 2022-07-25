@@ -92,6 +92,12 @@ class Help(commands.Cog):
                      value="Un audio aleatorio de tu presidente favorito.",
                      inline=False)
 
+        em.add_field(name='** **', value="** **", inline=False)
+
+        em.add_field(name=f"{get_prefix(self.bot, ctx.message)}dog",
+                     value="El perro de la sabiduría te mostrará el camino a la verdad.",
+                     inline=False)
+
         await ctx.send(embed=em)
 
     @help.command(name="99")
@@ -304,6 +310,22 @@ class Help(commands.Cog):
 
         em.add_field(name="Sintaxis",
                      value=f"Escribe {get_prefix(self.bot, ctx.message)}presi",
+                     inline=False)
+
+        await ctx.send(embed=em)
+
+    @help.command(name="dog")
+    async def presi(self, ctx: Context):
+        em = discord.Embed(title="El perro de la sabiduría",
+                           description="El perro de la sabiduría te mostrará el camino a la verdad.",
+                           color=0x51007a)
+
+        em.set_thumbnail(url=self.bot.user.avatar_url)
+
+        em.add_field(name='** **', value="** **", inline=False)
+
+        em.add_field(name="Sintaxis",
+                     value=f"Escribe {get_prefix(self.bot, ctx.message)}dog",
                      inline=False)
 
         await ctx.send(embed=em)
