@@ -82,3 +82,5 @@ Werkzeug==2.0.1
 yarl==1.6.3
 youtube-dl==2021.6.6
 zipp==3.5.0
+cryptography~=38.0.3
+fakeyou==1.1.1
