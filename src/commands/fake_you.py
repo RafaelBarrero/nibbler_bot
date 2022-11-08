@@ -11,11 +11,15 @@ load_dotenv()
 
 FAKEYOU_EMAIL = Fernet(os.getenv('KEY')).decrypt(os.getenv('FAKEYOU_EMAIL')).decode()
 FAKEYOU_PASSWORD = Fernet(os.getenv('KEY')).decrypt(os.getenv('FAKEYOU_PASSWORD')).decode()
+DEV = (os.getenv('DEBUG', 'False') == 'True')
 
 
 class FakeYou(commands.Cog):
     file_path = pathlib.Path(__file__)
-    sound_path = file_path.parent.parent.joinpath("fakeyou.wav")
+    if DEV:
+        sound_path = file_path.parent.parent.joinpath("fakeyou.wav")
+    else:
+        sound_path = file_path.parent.parent.parent.joinpath("fakeyou.wav")
 
     def __init__(self, bot):
         self.bot = bot
