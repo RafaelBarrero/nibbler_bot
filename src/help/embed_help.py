@@ -101,7 +101,13 @@ class Help(commands.Cog):
 
         em2.add_field(name=f"{get_prefix(self.bot, ctx.message)}fu <persona> <mensaje>",
                      value="Dime a quien imitar, dime lo que quieras que diga y te lo diré.",
-                     inline=False,)
+                     inline=False)
+
+        em2.add_field(name='** **', value="** **", inline=False)
+
+        em2.add_field(name=f"{get_prefix(self.bot, ctx.message)}outro",
+                     value="Vete de una forma fachera facherita 😎 🤙.",
+                     inline=False)
 
         await ctx.send(embed=em2)
 
@@ -354,6 +360,22 @@ class Help(commands.Cog):
         em.add_field(name="Argumentos",
                      value="**<persona>**: Persona a la que voy a imitar.\n\n"
                            "**<mensaje>**: Mensaje que quieres que diga.",
+                     inline=False)
+
+        await ctx.send(embed=em)
+
+    @help.command(name="outro")
+    async def outro(self, ctx: Context):
+        em = discord.Embed(title="Outro",
+                           description="Vete de una forma fachera facherita 😎 🤙",
+                           color=0x51007a)
+
+        em.set_thumbnail(url=self.bot.user.avatar)
+
+        em.add_field(name='** **', value="** **", inline=False)
+
+        em.add_field(name="Sintaxis",
+                     value=f"Escribe {get_prefix(self.bot, ctx.message)}outro",
                      inline=False)
 
         await ctx.send(embed=em)
