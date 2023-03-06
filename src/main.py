@@ -107,7 +107,7 @@ async def main():
         files = command_files + help_files
 
         for file in files:
-            if "init" not in file and "anime" not in file and "fake" not in file:
+            if "init" not in file and "anime" not in file:
                 file_name = pathlib.Path(file).name[:-3]
                 try:
                     if "help" in str(pathlib.Path(file)):
