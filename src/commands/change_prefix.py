@@ -41,5 +41,5 @@ class ChangePrefix(commands.Cog):
             await ctx.send(f"Lo siento {mention}, no tienes permisos para eso :(")
 
 
-def setup(bot):
-    bot.add_cog(ChangePrefix(bot))
+async def setup(bot):
+    await bot.add_cog(ChangePrefix(bot))

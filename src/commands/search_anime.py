@@ -137,5 +137,5 @@ class SearchAnime(commands.Cog):
             await ctx.send("Pero pon un género bro")
 
 
-def setup(bot):
-    bot.add_cog(SearchAnime(bot))
+async def setup(bot):
+    await bot.add_cog(SearchAnime(bot))

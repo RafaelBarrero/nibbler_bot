@@ -4,6 +4,7 @@ import sys
 import glob
 import json
 import traceback
+import asyncio
 
 import discord
 import pathlib as pathlib
@@ -96,24 +97,33 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name=f"Cagar materia oscura"))
 
 
+async def main():
+    try:
+        file_path = pathlib.Path(__file__).parent.absolute()
+        command_path = file_path.joinpath(file_path, "commands")
+        help_path = file_path.joinpath(file_path, "help")
+        command_files = glob.glob(f'{command_path}/*.py')
+        help_files = glob.glob(f'{help_path}/*.py')
+        files = command_files + help_files
+
+        for file in files:
+            if "init" not in file and "anime" not in file and "fake" not in file:
+                file_name = pathlib.Path(file).name[:-3]
+                try:
+                    if "help" in str(pathlib.Path(file)):
+                        await bot.load_extension(f"help.{file_name}")
+                    else:
+                        await bot.load_extension(f"commands.{file_name}")
+                except Exception as e:
+                    print(f'Failed to load extension {file_name}.', file=sys.stderr)
+                    traceback.print_exc()
+        await bot.start(TOKEN)
+    except Exception as e:
+        traceback.print_exc()
+        pass
+
 if __name__ == '__main__':
-    file_path = pathlib.Path(__file__).parent.absolute()
-    command_path = file_path.joinpath(file_path, "commands")
-    help_path = file_path.joinpath(file_path, "help")
-    command_files = glob.glob(f'{command_path}/*.py')
-    help_files = glob.glob(f'{help_path}/*.py')
-    files = command_files + help_files
-
-    for file in files:
-        if "init" not in file and "anime" not in file:
-            file_name = pathlib.Path(file).name[:-3]
-            try:
-                if "help" in str(pathlib.Path(file)):
-                    bot.load_extension(f"help.{file_name}")
-                else:
-                    bot.load_extension(f"commands.{file_name}")
-            except Exception as e:
-                print(f'Failed to load extension {file_name}.', file=sys.stderr)
-                traceback.print_exc()
-
-    bot.run(TOKEN)
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt as e:
+        traceback.print_exc()

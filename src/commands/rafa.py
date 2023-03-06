@@ -13,5 +13,5 @@ class Rafa(commands.Cog):
         await ctx.send(f"{rafa_mention} sigue vivo :'c")
 
 
-def setup(bot):
-    bot.add_cog(Rafa(bot))
+async def setup(bot):
+    await bot.add_cog(Rafa(bot))

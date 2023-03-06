@@ -84,5 +84,5 @@ class PlaySound(commands.Cog):
         await self.play_sound(ctx, file)
 
 
-def setup(bot):
-    bot.add_cog(PlaySound(bot))
+async def setup(bot):
+    await bot.add_cog(PlaySound(bot))

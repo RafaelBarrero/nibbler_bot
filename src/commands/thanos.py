@@ -22,5 +22,5 @@ class Thanos(commands.Cog):
         await ctx.send(f"{author.mention} {response}")
 
 
-def setup(bot):
-    bot.add_cog(Thanos(bot))
+async def setup(bot):
+    await bot.add_cog(Thanos(bot))

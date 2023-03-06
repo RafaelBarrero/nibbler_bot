@@ -28,5 +28,5 @@ class Dice(commands.Cog):
             await self.roll_dice(ctx, 6)
 
 
-def setup(bot):
-    bot.add_cog(Dice(bot))
+async def setup(bot):
+    await bot.add_cog(Dice(bot))

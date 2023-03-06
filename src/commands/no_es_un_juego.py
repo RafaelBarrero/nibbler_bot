@@ -19,5 +19,5 @@ class NoEsUnJuego(commands.Cog):
             await message.channel.send("***No te confundas, esto no es un juego***")
 
 
-def setup(bot):
-    bot.add_cog(NoEsUnJuego(bot))
+async def setup(bot):
+    await bot.add_cog(NoEsUnJuego(bot))

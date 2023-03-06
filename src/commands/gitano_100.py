@@ -30,5 +30,5 @@ class Gitano100(commands.Cog):
         await self.play.play_sound(ctx, file)
 
 
-def setup(bot):
-    bot.add_cog(Gitano100(bot))
+async def setup(bot):
+    await bot.add_cog(Gitano100(bot))
