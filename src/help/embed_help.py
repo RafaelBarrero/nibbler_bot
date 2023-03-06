@@ -21,7 +21,7 @@ class Help(commands.Cog):
                                        f"sobre el comando.\n\n"
                                        f"**Prefijo actual**: {get_prefix(self.bot, ctx.message)}\n",
                            color=0x51007a)
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -97,7 +97,7 @@ class Help(commands.Cog):
         await ctx.send(embed=em)
 
         em2 = discord.Embed(color=0x51007a)
-        em2.set_thumbnail(url=self.bot.user.avatar_url)
+        em2.set_thumbnail(url=self.bot.user.avatar)
 
         em2.add_field(name=f"{get_prefix(self.bot, ctx.message)}fu <persona> <mensaje>",
                      value="Dime a quien imitar, dime lo que quieras que diga y te lo diré.",
@@ -111,7 +111,7 @@ class Help(commands.Cog):
                            description="Responde con una cita aleatoria de Brooklyn 99.",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -130,7 +130,7 @@ class Help(commands.Cog):
                                            "\"Que me caigoooo\".",
                                color=0x51007a)
 
-            em.set_thumbnail(url=self.bot.user.avatar_url)
+            em.set_thumbnail(url=self.bot.user.avatar)
 
             em.add_field(name='** **', value="** **", inline=False)
 
@@ -153,7 +153,7 @@ class Help(commands.Cog):
                            description="Lanza un dado y devuelve el resultado.",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -177,7 +177,7 @@ class Help(commands.Cog):
                            description="Reproduce: WOW, YOU COULD REALLY DANCE.",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -193,7 +193,7 @@ class Help(commands.Cog):
                            description="Muestra la ayuda general con todos los comandos disponibles.",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -210,7 +210,7 @@ class Help(commands.Cog):
                                        "Pregúntale a Lebron James si para él es un juego.",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -228,7 +228,7 @@ class Help(commands.Cog):
                            description="Cambia el prefijo actual por el nuevo indicado.",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -256,7 +256,7 @@ class Help(commands.Cog):
                            description="Responde si Rafa sigue vivo o no.",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -273,7 +273,7 @@ class Help(commands.Cog):
                                        "\n\nSi no lo ha hecho, debería hacerlo.",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -292,7 +292,7 @@ class Help(commands.Cog):
                                        "FRANCO, FRANCO. ¡VIVA ESPAÑA! ¡YO SOY ESPAÑOL, ESPAÑOL, ESPAÑOL!",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -309,7 +309,7 @@ class Help(commands.Cog):
                            description="Un audio aleatorio de tu presidente favorito.",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -325,7 +325,7 @@ class Help(commands.Cog):
                            description="El perro de la sabiduría te mostrará el camino a la verdad.",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
@@ -341,7 +341,7 @@ class Help(commands.Cog):
                            description="Dime a quien imitar, dime lo que quieras que diga y te lo diré.",
                            color=0x51007a)
 
-        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar)
 
         em.add_field(name='** **', value="** **", inline=False)
 
