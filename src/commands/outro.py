@@ -27,12 +27,14 @@ class Outro(commands.Cog):
             if len(mentions) == 0:
                 await author.move_to(None)
             elif len(mentions) > 0 and admin:
-                if author.mention in mentions:
+                author_in_mentions = author.mention in [mention.mention for mention in mentions]
+                mention_list = [mention for mention in mentions if mention.mention != author.mention]
+                if author_in_mentions and len(mention_list) > 0:
                     await ctx.send(f"{author.mention} ha decidido irse de orgía con "
-                                   f"{', '.join([mention.mention for mention in mentions if mention != author.mention])}")
-                elif author.mention not in mentions:
+                                   f"{', '.join([mention.mention for mention in mention_list])}")
+                elif not author_in_mentions and len(mention_list) > 0:
                     vaya = 'vaya'
-                    if len(mentions) > 1:
+                    if len(mention_list) > 1:
                         vaya += 'n'
                     await ctx.send(f"{author.mention} quiere que " 
                                    f"{', '.join([mention.mention for mention in mentions])} se {vaya} de orgía gay")
