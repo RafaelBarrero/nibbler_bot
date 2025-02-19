@@ -12,7 +12,6 @@ from typing import Tuple
 from discord.ext import commands
 from discord.ext.commands import Context
 
-from telnetlib import EC
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
