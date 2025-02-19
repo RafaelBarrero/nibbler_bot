@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 DROPBOX_TOKEN = os.getenv('DROPBOX_TOKEN')
-GUILD = "SALAS BORRACHAS"
+GUILD = os.getenv('GUILD')
 PATH = pathlib.Path(__file__).parent.parent
 intents = discord.Intents.all()
 guild_found: discord.Guild = None
