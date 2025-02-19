@@ -17,7 +17,7 @@ DEV = (os.getenv('DEBUG', 'False') == 'True')
 class FakeYou(commands.Cog):
     file_path = pathlib.Path(__file__)
     if DEV:
-        sound_path = file_path.parent.parent.joinpath("fakeyou.wav")
+        sound_path = file_path.parent.parent.parent.joinpath("fakeyou.wav")
     else:
         sound_path = file_path.parent.parent.parent.joinpath("fakeyou.wav")
 
@@ -41,6 +41,7 @@ class FakeYou(commands.Cog):
                 voice_token = voice.voices.modelTokens[0]
                 file = self.sound_path
                 await ctx.send("Esperando a que el notas me deje hablar")
+                # TODO I need to fix the file downloaded
                 await self.tts.say(text_to_say, voice_token, filename="fakeyou.wav")
                 await self.play.play_sound(ctx, file)
             else:
