@@ -15,15 +15,19 @@ from dropbox.files import WriteMode
 
 from dotenv import load_dotenv
 
+import logging
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 DROPBOX_TOKEN = os.getenv('DROPBOX_TOKEN')
 GUILD = os.getenv('GUILD')
+LOG_LEVEL = getattr(logging, os.getenv('LOG_LEVEL', ''), logging.INFO)
 PATH = pathlib.Path(__file__).parent.parent
 intents = discord.Intents.all()
-guild_found: discord.Guild = None
 
 dbx = dropbox.Dropbox(DROPBOX_TOKEN)
+
+discord.utils.setup_logging(level=LOG_LEVEL)
 
 links = []
 
@@ -85,16 +89,17 @@ async def on_guild_remove(guild: discord.Guild):
 
 @bot.event
 async def on_ready():
-    global guild_found
-    guild_found = discord.utils.find(lambda g: g.name == GUILD, bot.guilds)
-    with open(PATH.joinpath("prefixes.json"), "wb") as f:  # Download prefixes from Dropbox
-        metadata, res = dbx.files_download(path="/prefixes.json")
-        f.write(res.content)
-    print(
-        f'{bot.user} is connected to the following guild:\n'
-        f'{guild_found.name}(id: {guild_found.id})'
-    )
+    try:
+        with open(PATH.joinpath("prefixes.json"), "wb") as f:  # Download prefixes from Dropbox
+            metadata, res = dbx.files_download(path="/prefixes.json")
+            f.write(res.content)
+        logging.info("Bot connected to the following guilds:")
+        for guild in bot.guilds:
+            logging.info(f"- {guild.name}(id: {guild.id})")
+    except Exception as on_ready_exception:
+        logging.error(f"Error on ready event: {on_ready_exception}")
     await bot.change_presence(activity=discord.Game(name=f"Cagar materia oscura"))
+    logging.info('Bot is ready.')
 
 
 async def main():
@@ -114,11 +119,11 @@ async def main():
                         await bot.load_extension(f"help.{file_name}")
                     else:
                         await bot.load_extension(f"commands.{file_name}")
-                except Exception as e:
+                except Exception as file_exception:
                     print(f'Failed to load extension {file_name}.', file=sys.stderr)
                     traceback.print_exc()
         await bot.start(TOKEN)
-    except Exception as e:
+    except Exception as main_exception:
         traceback.print_exc()
         pass
 
