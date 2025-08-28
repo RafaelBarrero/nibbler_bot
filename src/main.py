@@ -25,7 +25,10 @@ LOG_LEVEL = getattr(logging, os.getenv('LOG_LEVEL', ''), logging.INFO)
 PATH = pathlib.Path(__file__).parent.parent
 intents = discord.Intents.all()
 
-dbx = dropbox.Dropbox(DROPBOX_TOKEN)
+try:
+    dbx = dropbox.Dropbox(DROPBOX_TOKEN)
+except Exception as dropbox_error:
+    logging.error(f'Error connecting to Dropbox {dropbox_error}')
 
 discord.utils.setup_logging(level=LOG_LEVEL)
 
