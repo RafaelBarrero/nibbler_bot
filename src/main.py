@@ -17,18 +17,58 @@ from dotenv import load_dotenv
 
 import logging
 
+import requests
+import base64
+
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-DROPBOX_TOKEN = os.getenv('DROPBOX_TOKEN')
+APP_KEY = os.getenv('APP_KEY')
+APP_SECRET = os.getenv('APP_SECRET')
+REFRESH_TOKEN = os.getenv('REFRESH_TOKEN')
 GUILD = os.getenv('GUILD')
 LOG_LEVEL = getattr(logging, os.getenv('LOG_LEVEL', ''), logging.INFO)
 PATH = pathlib.Path(__file__).parent.parent
 intents = discord.Intents.all()
+global dbx
 
-try:
-    dbx = dropbox.Dropbox(DROPBOX_TOKEN)
-except Exception as dropbox_error:
-    logging.error(f'Error connecting to Dropbox {dropbox_error}')
+
+def refresh_access_token():
+    try:
+        basic_auth = base64.b64encode(bytes(f'{APP_KEY}:{APP_SECRET}', 'utf-8')).decode('utf-8')  # bytes
+
+        headers = {
+            "Authorization": f'Basic {basic_auth}',
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+
+        data = {
+            "refresh_token": REFRESH_TOKEN,
+            "grant_type": "refresh_token"
+        }
+
+        response = requests.post('https://api.dropbox.com/oauth2/token', headers=headers, data=data)
+        response_data = response.json()
+        new_access_token = response_data.get('access_token')
+        if new_access_token:
+            return new_access_token
+        else:
+            logging.error("Failed to refresh access token: No access token in response")
+            return None
+    except Exception as exception_refresh_token:
+        logging.error(f"Exception occurred while refreshing access token: {exception_refresh_token}")
+        return None
+
+def connect_to_dropbox():
+    try:
+        global dbx
+        dropbox_token = refresh_access_token()
+        dbx = dropbox.Dropbox(dropbox_token)
+    except Exception as dropbox_error:
+        logging.error(f'Error connecting to Dropbox {dropbox_error}')
+
+connect_to_dropbox()
+
 
 discord.utils.setup_logging(level=LOG_LEVEL)
 
